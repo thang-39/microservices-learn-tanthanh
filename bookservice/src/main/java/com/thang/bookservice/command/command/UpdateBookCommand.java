@@ -9,7 +9,6 @@ import org.axonframework.modelling.command.TargetAggregateIdentifier;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class UpdateBookCommand {
     @TargetAggregateIdentifier
     private String bookId;
