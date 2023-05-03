@@ -20,6 +20,10 @@ spring:
             - Path=/api/v1/employees/**
 #           filters:
 #             - AuthFilter
+        - id: borrowservice
+          uri: http://localhost:9003
+          predicates:
+            - Path=/api/v1/borrow/**
       default-filters:
         - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
       globalcors:
