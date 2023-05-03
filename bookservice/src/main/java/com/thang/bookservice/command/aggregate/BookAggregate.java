@@ -6,6 +6,8 @@ import com.thang.bookservice.command.command.UpdateBookCommand;
 import com.thang.bookservice.command.event.BookCreatedEvent;
 import com.thang.bookservice.command.event.BookDeletedEvent;
 import com.thang.bookservice.command.event.BookUpdatedEvent;
+import com.thang.commonservice.command.UpdateStatusBookCommand;
+import com.thang.commonservice.event.BookUpdateStatusEvent;
 import lombok.NoArgsConstructor;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
@@ -39,6 +41,13 @@ public class BookAggregate {
     }
 
     @CommandHandler
+    public void handle(UpdateStatusBookCommand command) {
+        BookUpdateStatusEvent event = new BookUpdateStatusEvent();
+        BeanUtils.copyProperties(command,event);
+        AggregateLifecycle.apply(event);
+    }
+
+    @CommandHandler
     public void handle(DeleteBookCommand deleteBookCommand) {
         BookDeletedEvent bookDeletedEvent = new BookDeletedEvent();
         BeanUtils.copyProperties(deleteBookCommand,bookDeletedEvent);
@@ -58,6 +67,12 @@ public class BookAggregate {
         this.bookId = event.getBookId();
         this.name = event.getName();
         this.author = event.getAuthor();
+        this.isReady = event.getIsReady();
+    }
+
+    @EventSourcingHandler
+    public void on(BookUpdateStatusEvent event) {
+        this.bookId = event.getBookId();
         this.isReady = event.getIsReady();
     }
 

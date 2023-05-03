@@ -22,6 +22,7 @@ public class BorrowEventHandler {
 
     @EventHandler
     public void on(BorrowDeletedEvent event) {
+        if (borrowRepository.findById(event.getId()).isPresent())
          borrowRepository.deleteById(event.getId());
     }
 }

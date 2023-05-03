@@ -44,7 +44,7 @@ public class BorrowAggregate {
 
     @CommandHandler
     public void handle(DeleteBorrowCommand command) {
-        DeleteBorrowCommand event = new DeleteBorrowCommand();
+        BorrowDeletedEvent event = new BorrowDeletedEvent();
         BeanUtils.copyProperties(command,event);
         AggregateLifecycle.apply(event);
     }

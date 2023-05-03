@@ -5,6 +5,8 @@ import com.thang.bookservice.command.data.BookRepository;
 import com.thang.bookservice.query.model.BookResponseModel;
 import com.thang.bookservice.query.queries.GetAllBooksQuery;
 import com.thang.bookservice.query.queries.GetBookQuery;
+import com.thang.commonservice.model.BookResponseCommonModel;
+import com.thang.commonservice.query.GetDetailsBookQuery;
 import org.axonframework.queryhandling.QueryHandler;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,14 @@ public class BookProjection {
         BookResponseModel model = new BookResponseModel();
         Book book = bookRepository.findById(getBookQuery.getBookId()).get();
         BeanUtils.copyProperties(book, model);
+        return model;
+    }
+
+    @QueryHandler
+    public BookResponseCommonModel handle(GetDetailsBookQuery getDetailsBookQuery) {
+        BookResponseCommonModel model = new BookResponseCommonModel();
+        Book book = bookRepository.findById(getDetailsBookQuery.getBookId()).get();
+        BeanUtils.copyProperties(book,model);
         return model;
     }
 
