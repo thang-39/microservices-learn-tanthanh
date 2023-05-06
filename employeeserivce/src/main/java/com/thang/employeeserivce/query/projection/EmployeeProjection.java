@@ -1,5 +1,7 @@
 package com.thang.employeeserivce.query.projection;
 
+import com.thang.commonservice.model.EmployeeResponseCommonModel;
+import com.thang.commonservice.query.GetDetailsEmployeeQuery;
 import com.thang.employeeserivce.command.data.Employee;
 import com.thang.employeeserivce.command.data.EmployeeRepository;
 import com.thang.employeeserivce.query.model.EmployeeResponseModel;
@@ -23,6 +25,14 @@ public class EmployeeProjection {
         EmployeeResponseModel model = new EmployeeResponseModel();
         Employee employee = employeeRepository.findById(query.getEmployeeId()).get();
         BeanUtils.copyProperties(employee,model);
+        return model;
+    }
+
+    @QueryHandler
+    public EmployeeResponseCommonModel handle(GetDetailsEmployeeQuery query) {
+        EmployeeResponseCommonModel model = new EmployeeResponseCommonModel();
+        Employee entity = employeeRepository.findById(query.getEmployeeId()).get();
+        BeanUtils.copyProperties(entity,model);
         return model;
     }
 

@@ -6,7 +6,9 @@ import com.thang.bookservice.command.command.UpdateBookCommand;
 import com.thang.bookservice.command.event.BookCreatedEvent;
 import com.thang.bookservice.command.event.BookDeletedEvent;
 import com.thang.bookservice.command.event.BookUpdatedEvent;
+import com.thang.commonservice.command.RollBackStatusBookCommand;
 import com.thang.commonservice.command.UpdateStatusBookCommand;
+import com.thang.commonservice.event.BookRollBackStatusEvent;
 import com.thang.commonservice.event.BookUpdateStatusEvent;
 import lombok.NoArgsConstructor;
 import org.axonframework.commandhandling.CommandHandler;
@@ -54,6 +56,13 @@ public class BookAggregate {
         AggregateLifecycle.apply(bookDeletedEvent);
     }
 
+    @CommandHandler
+    public void handle(RollBackStatusBookCommand command) {
+        BookRollBackStatusEvent event = new BookRollBackStatusEvent();
+        BeanUtils.copyProperties(command,event);
+        AggregateLifecycle.apply(event);
+    }
+
     @EventSourcingHandler
     public void on(BookCreatedEvent event) {
         this.bookId = event.getBookId();
@@ -79,5 +88,11 @@ public class BookAggregate {
     @EventSourcingHandler
     public void on(BookDeletedEvent event) {
         this.bookId = event.getBookId();
+    }
+
+    @EventSourcingHandler
+    public void on(BookRollBackStatusEvent event) {
+        this.bookId = event.getBookId();
+        this.isReady = event.getIsReady();
     }
 }

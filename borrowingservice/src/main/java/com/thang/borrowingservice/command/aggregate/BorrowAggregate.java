@@ -1,11 +1,8 @@
 package com.thang.borrowingservice.command.aggregate;
 
-import com.thang.borrowingservice.command.command.CreateBorrowCommand;
-import com.thang.borrowingservice.command.command.DeleteBorrowCommand;
-import com.thang.borrowingservice.command.command.UpdateBorrowCommand;
-import com.thang.borrowingservice.command.event.BorrowCreatedEvent;
-import com.thang.borrowingservice.command.event.BorrowDeletedEvent;
-import com.thang.borrowingservice.command.event.BorrowUpdatedEvent;
+import com.thang.borrowingservice.command.command.*;
+import com.thang.borrowingservice.command.event.*;
+import com.thang.commonservice.command.RollBackStatusBookCommand;
 import lombok.NoArgsConstructor;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
@@ -27,6 +24,7 @@ public class BorrowAggregate {
     private String employeeId;
     private Date borrowingDate;
     private Date returnDate;
+    private String message;
 
     @CommandHandler
     public BorrowAggregate(CreateBorrowCommand command) {
@@ -45,6 +43,20 @@ public class BorrowAggregate {
     @CommandHandler
     public void handle(DeleteBorrowCommand command) {
         BorrowDeletedEvent event = new BorrowDeletedEvent();
+        BeanUtils.copyProperties(command,event);
+        AggregateLifecycle.apply(event);
+    }
+
+    @CommandHandler
+    public void handle(SendMessageCommand command) {
+        BorrowSendMessageEvent event = new BorrowSendMessageEvent();
+        BeanUtils.copyProperties(command,event);
+        AggregateLifecycle.apply(event);
+    }
+
+    @CommandHandler
+    public void handle(UpdateBookReturnCommand command) {
+        BorrowUpdateBookReturnEvent event = new BorrowUpdateBookReturnEvent();
         BeanUtils.copyProperties(command,event);
         AggregateLifecycle.apply(event);
     }
@@ -69,6 +81,21 @@ public class BorrowAggregate {
     @EventSourcingHandler
     public void on(BorrowDeletedEvent event) {
         this.id = event.getId();
+    }
+
+    @EventSourcingHandler
+    public void on(BorrowSendMessageEvent event) {
+        this.id = event.getId();
+        this.employeeId = event.getEmployeeId();
+        this.message = event.getMessage();
+    }
+
+    @EventSourcingHandler
+    public void on(BorrowUpdateBookReturnEvent event) {
+
+        this.bookId = event.getBookId();
+        this.employeeId = event.getEmployee();
+        this.returnDate = event.getReturnDate();
     }
 
 

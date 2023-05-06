@@ -13,10 +13,6 @@ import org.springframework.messaging.MessageChannel;
 @EnableDiscoveryClient
 @Import({AxonConfig.class})
 public class BorrowingserviceApplication {
-	@Bean
-	public MessageChannel borrowOutputChannel() {
-		return MessageChannels.direct().get();
-	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(BorrowingserviceApplication.class, args);
